@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Style UI test app</title>
+    <link href="//js.arcgis.com/3.13/esri/css/esri.css" rel="stylesheet" />
+    <link href="index.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="map">
+        <div class="toolbar">
+            <form id="styleForm">
+                <label for="colorBox">Color</label>
+                <input id="colorBox" name="color" type="color" />
+
+                <label for="widthBox">Width</label>
+                <input id="widthBox" name="width" type="number" min="0" step="1" value="1" />
+
+                <button id="changeStyleButton" type="submit" disabled="disabled">Update Style</button>
+            </form>
+        </div>
+    </div>
+    <script src="//js.arcgis.com/3.13/init.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

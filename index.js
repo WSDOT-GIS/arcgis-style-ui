@@ -1,12 +1,13 @@
 ﻿/*global require*/
 require([
 	"esri/map",
-	"esri/renderers/smartMapping",
+	"esri/renderers/jsonUtils",
 	"esri/layers/FeatureLayer",
 	"esri/renderers/SimpleRenderer",
-	"esri/symbols/SimpleLineSymbol"
-], function (Map, smartMapping, FeatureLayer, SimpleRenderer, SimpleLineSymbol) {
-	var map, layer;
+	"esri/symbols/SimpleLineSymbol",
+	"arcgis-style-ui"
+], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, arcgisStyleUI) {
+	var map, layer, styleUI;
 
 	map = new Map("map", {
 		basemap: "hybrid",
@@ -18,19 +19,21 @@ require([
 	map.on("load", function () {
 		layer = new FeatureLayer("http://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/WSDOT%20-%20Roadway%20Characteristics/FeatureServer/1");
 		map.addLayer(layer);
-		document.getElementById("changeStyleButton").disabled = false;
+
+		var setLayerRenderer = function (evt) {
+			var renderer = evt.detail;
+			renderer = rendererJsonUtils.fromJson(renderer);
+			layer.setRenderer(renderer);
+			layer.refresh();
+		};
+
+		layer.on("load", function () {
+			styleUI = new arcgisStyleUI.LineSymbolUI(JSON.stringify(layer.renderer.toJson()));
+			document.querySelector(".toolbar").appendChild(styleUI.form);
+
+			styleUI.form.addEventListener("style-change", setLayerRenderer);
+
+			styleUI.form.addEventListener("style-reset", setLayerRenderer);
+		});
 	});
-
-	var form = document.forms.styleForm;
-
-
-	form.onsubmit = function () {
-		var symbol = new SimpleLineSymbol();
-		symbol.setColor(this.color.value);
-		symbol.setWidth(this.width.value);
-		var renderer = new SimpleRenderer(symbol);
-		layer.setRenderer(renderer);
-		layer.refresh();
-		return false;
-	};
 });

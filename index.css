@@ -11,4 +11,6 @@
     z-index: 1;
     background-color: white;
     padding: 1em;
+
+    border-bottom-left-radius: 5px;
 }

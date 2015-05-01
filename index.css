@@ -14,3 +14,23 @@
 
     border-bottom-left-radius: 5px;
 }
+
+.map-progress {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    display:none;
+}
+
+.container {
+    width: 100%;
+}
+
+.container > button {
+    width: 50%;
+}
+
+.map[data-updating] .map-progress {
+    display: block;
+}

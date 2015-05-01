@@ -75,7 +75,7 @@ define([], function () {
 	 * @typedef {Object} CreateInputOptions
 	 * @param {string} type
 	 * @param {string} name
-	 * @param {string} label
+	 * @param {string} [label]
 	 * @param {(string|number)} value
 	 */
 
@@ -88,17 +88,21 @@ define([], function () {
 		var ignoredOptionsRe = /^(?:(?:type)|(?:name)|(?:label)|(?:id))$/;
 		var type = options.type;
 		var name = options.name;
-		var labelText = options.label || name;
 
 		var frag = document.createDocumentFragment();
-		var label = document.createElement("label");
-		label.textContent = labelText;
 
 		var input = document.createElement("input");
 		input.type = type;
 		input.name = name;
 		input.id = options.id || name + Date.now();
-		label.for = input.id;
+
+		var label;
+		if (options.label) {
+			label = document.createElement("label");
+			label.textContent = options.label;
+			label.for = input.id;
+		}
+
 
 		var propName;
 
@@ -109,36 +113,58 @@ define([], function () {
 
 		}
 
-		frag.appendChild(label);
+		if (label) {
+			frag.appendChild(label);
+		}
 		frag.appendChild(input);
 
 		return frag;
 	}
 
 	/**
-	 * An UI control object.
-	 * @param {external:Renderer} defaultRenderer
-	 * @member {HTMLFormElement} form
-	 * @class
+	 * Creates the line symbol controls.
+	 * @returns {HTMLDocumentFragment}
 	 */
-	function LineSymbolUI(defaultRenderer) {
-		var form = document.createElement("form");
-		this.form = form;
-		form.dataset.defaultRenderer = defaultRenderer;
+	function createLineSymbolUI() {
+		var output = document.createDocumentFragment();
 
+		var colorFieldSet = document.createElement("fieldset");
+		var legend = document.createElement("legend");
+		legend.textContent = "Color";
+		colorFieldSet.appendChild(legend);
 
 		var frag = createInput({
 			type: "color",
 			name: "linecolor",
-			label: "Line Color",
 			required: "required"
 		});
-		form.appendChild(frag);
+		colorFieldSet.appendChild(frag);
+
+
+		frag = createInput({
+			type: "range",
+			name: "alpha",
+			title: "alpha",
+			min: 0,
+			max: 255,
+			step: 1,
+			required: "required",
+			value: 255
+		});
+		colorFieldSet.appendChild(frag);
+
+		output.appendChild(colorFieldSet);
+
+		var lineFieldSet = document.createElement("fieldset");
+		legend = document.createElement("legend");
+		legend.textContent = "Line";
+		lineFieldSet.appendChild(legend);
+		output.appendChild(lineFieldSet);
 
 		frag = createInput({
 			type: "number",
 			name: "linewidth",
-			label: "Line Width",
+			label: "Width",
 			placeholder: "width",
 			title: "width",
 			required: "required",
@@ -147,30 +173,40 @@ define([], function () {
 			step: 0.5,
 			max: 10
 		});
+		lineFieldSet.appendChild(frag);
+
+		lineFieldSet.appendChild(createLineStyleSelect());
+
+		return output;
+	}
+
+	/**
+	 * An UI control object.
+	 * @param {external:Renderer} defaultRenderer
+	 * @member {HTMLFormElement} form
+	 * @class
+	 */
+	function RendererForm(defaultRenderer) {
+		var form = document.createElement("form");
+		this.form = form;
+		form.dataset.defaultRenderer = defaultRenderer;
+
+		var frag = createLineSymbolUI();
 		form.appendChild(frag);
 
-		frag = createInput({
-			type: "range",
-			name: "alpha",
-			min: 0,
-			max: 255,
-			step: 1,
-			required: "required",
-			value: 255
-		});
-		form.appendChild(frag);
-
-		form.appendChild(createLineStyleSelect());
+		var buttonContainer = document.createElement("div");
+		buttonContainer.classList.add("container");
+		form.appendChild(buttonContainer);
 
 		var submitButton = document.createElement("button");
 		submitButton.type = "submit";
 		submitButton.textContent = "Update Style";
-		form.appendChild(submitButton);
+		buttonContainer.appendChild(submitButton);
 
 		var resetButton = document.createElement("button");
 		resetButton.type = "reset";
 		resetButton.textContent = "Reset Style";
-		form.appendChild(resetButton);
+		buttonContainer.appendChild(resetButton);
 
 		form.onsubmit = function () {
 			var renderer = {
@@ -200,7 +236,5 @@ define([], function () {
 		};
 	}
 
-	return {
-		LineSymbolUI: LineSymbolUI
-	};
+	return RendererForm;
 });

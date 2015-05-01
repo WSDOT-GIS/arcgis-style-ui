@@ -6,7 +6,7 @@ require([
 	"esri/renderers/SimpleRenderer",
 	"esri/symbols/SimpleLineSymbol",
 	"arcgis-style-ui"
-], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, arcgisStyleUI) {
+], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, ArcGisStyleUI) {
 	var map, layer, styleUI;
 
 	map = new Map("map", {
@@ -28,7 +28,7 @@ require([
 		};
 
 		layer.on("load", function () {
-			styleUI = new arcgisStyleUI.LineSymbolUI(JSON.stringify(layer.renderer.toJson()));
+			styleUI = new ArcGisStyleUI(JSON.stringify(layer.renderer.toJson()));
 			document.querySelector(".toolbar").appendChild(styleUI.form);
 
 			styleUI.form.addEventListener("style-change", setLayerRenderer);

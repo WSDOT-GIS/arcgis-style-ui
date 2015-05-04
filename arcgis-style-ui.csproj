@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="custom\arcgis-style-ui\main.js" />
+    <Content Include="custom\arcgis-style-ui\style-dialog.js" />
     <Content Include="index.css" />
     <Content Include="index.html" />
     <Content Include="index.js" />

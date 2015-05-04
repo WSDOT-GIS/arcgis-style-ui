@@ -55,6 +55,12 @@ define([], function () {
 		return select;
 	}
 
+	function rgbArrayToHex(/**{number[]}*/ rgb) {
+		return ["#", rgb.map(function (n) {
+			return n.toString(16);
+		}).join("")].join("");
+	}
+
 
 	/**
 	 * Returns a hex string into an RGB color array.
@@ -72,6 +78,7 @@ define([], function () {
 	}
 
 	/**
+	 * Options for the createInput function.
 	 * @typedef {Object} CreateInputOptions
 	 * @param {string} type
 	 * @param {string} name
@@ -123,9 +130,13 @@ define([], function () {
 
 	/**
 	 * Creates the line symbol controls.
+	 * @param {Object} options
+	 * @param {string} [options.color='#000000'] - Color in "#xxxxxx" hex format
+	 * @param {number} [options.alpha=255] - Alpha value for the color. Valid values are from 0 to 255.
+	 * @param {number} [options.width=1] - Line width.
 	 * @returns {HTMLDocumentFragment}
 	 */
-	function createLineSymbolUI() {
+	function createLineSymbolUI(options) {
 		var output = document.createDocumentFragment();
 
 		var colorFieldSet = document.createElement("fieldset");
@@ -136,7 +147,8 @@ define([], function () {
 		var frag = createInput({
 			type: "color",
 			name: "linecolor",
-			required: "required"
+			required: "required",
+			value: options && options.color ? options.color : "#000000"
 		});
 		colorFieldSet.appendChild(frag);
 
@@ -149,7 +161,7 @@ define([], function () {
 			max: 255,
 			step: 1,
 			required: "required",
-			value: 255
+			value: options && (options.alpha || options.alpha === 0)  ? options.alpha : 255
 		});
 		colorFieldSet.appendChild(frag);
 
@@ -168,7 +180,7 @@ define([], function () {
 			placeholder: "width",
 			title: "width",
 			required: "required",
-			value: 1,
+			value: options && options.width ? options.width : 1,
 			min: 0.5,
 			step: 0.5,
 			max: 10
@@ -234,6 +246,12 @@ define([], function () {
 			});
 			form.dispatchEvent(evt);
 		};
+	}
+
+	RendererForm.prototype.setDefaultRenderer = function (defaultRenderer) {
+		if (defaultRenderer) {
+			this.form.dataset.defaultRenderer = JSON.stringify(defaultRenderer);
+		}
 	}
 
 	return RendererForm;

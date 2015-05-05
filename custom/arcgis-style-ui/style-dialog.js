@@ -20,6 +20,7 @@ define(["./main"], function (StyleUI) {
 		closeButton.classList.add("close-button");
 		closeButton.addEventListener("click", function () {
 			dialog.close();
+			dialog.parentElement.removeChild(dialog);
 		});
 
 		header.appendChild(closeButton);

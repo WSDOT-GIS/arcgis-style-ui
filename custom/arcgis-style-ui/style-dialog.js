@@ -1,11 +1,10 @@
-﻿/*global define*/
+﻿/*global define */
 
 define(["./main"], function (StyleUI) {
-	function StyleDialog() {
-		var self = this;
+	function StyleDialog(layerId, symbolType, defaultRenderer) {
 		var dialog = document.createElement("dialog");
-		if (dialogPolyfill) {
-			dialogPolyfill.registerDialog(dialog);
+		if (!window.HTMLDialogElement && window.dialogPolyfill) {
+			window.dialogPolyfill.registerDialog(dialog);
 		}
 		document.body.appendChild(dialog);
 
@@ -26,7 +25,7 @@ define(["./main"], function (StyleUI) {
 		header.appendChild(closeButton);
 
 		this.dialog = dialog;
-		var styleUI = new StyleUI();
+		var styleUI = new StyleUI(layerId, symbolType, defaultRenderer);
 		try {
 			styleUI.form.method = "dialog";
 		} catch (err) {
@@ -35,14 +34,13 @@ define(["./main"], function (StyleUI) {
 		this.dialog.appendChild(styleUI.form);
 		this.layer = null;
 
-		styleUI.form.addEventListener("style-change", function (evt) {
-			
+		////styleUI.form.addEventListener("style-change", function (evt) {
+		////	dialog.dispatchEvent(evt);
+		////});
 
-		});
-
-		styleUI.form.addEventListener("style-reset", function (evt) {
-
-		});
+		////styleUI.form.addEventListener("style-reset", function (evt) {
+		////	dialog.dispatchEvent(evt);
+		////});
 	}
 
 	StyleDialog.prototype.setLayer = function (layer) {

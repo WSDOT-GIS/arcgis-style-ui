@@ -7,7 +7,7 @@ require([
 	"esri/symbols/SimpleLineSymbol",
 	"arcgis-style-ui/style-dialog"
 ], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, StyleDialog) {
-	var map, layer, styleUI;
+	var map, layer;
 
 	map = new Map("map", {
 		basemap: "hybrid",
@@ -36,10 +36,25 @@ require([
 		}
 	};
 
-	var openChangeStyleControls = function (evt) {
+	function updateStyle(evt) {
+		var layer = evt.detail.layerId;
+		layer = getMapLayer(layer);
+		var renderer = evt.detail.renderer;
+		renderer = rendererJsonUtils.fromJson(renderer);
+		layer.setRenderer(renderer);
+		layer.refresh();
+	}
+
+	/**
+	 * Opens the dialog for changing the associated layer's style.
+	 * @this {HTMLInputElement} - An HTML button
+	 */
+	var openChangeStyleControls = function () {
 		var id = this.value;
 		var layer = getMapLayer(id);
-		var dialog = new StyleDialog(layer);
+		var dialog = new StyleDialog(id, layer.geometryType, layer.renderer);
+		dialog.dialog.addEventListener("style-change", updateStyle);
+		dialog.dialog.addEventListener("style-reset", updateStyle);
 		dialog.show();
 	};
 

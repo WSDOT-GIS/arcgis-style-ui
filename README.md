@@ -3,7 +3,8 @@
 
 This project is for designing a UI that will allow the user to change the styling of feature layers in a map.
 
-[Demo](http://wsdot-gis.github.io/arcgis-style-ui/)
+* [Demo](http://wsdot-gis.github.io/arcgis-style-ui/)
+* [Known Issues](https://github.com/WSDOT-GIS/arcgis-style-ui/issues)
 
 ## Setup ##
 
@@ -30,37 +31,6 @@ This module uses some browser features that are not supported by all browsers.
 |style    |:heavy_check_mark:|                  |:heavy_check_mark:|
 |color    |:heavy_check_mark:|                  |:heavy_check_mark:|
 |size     |:heavy_check_mark:|                  |                  |
-
-### Valid `style` values ###
-
-
-
-## Symbols ##
-
-### Simple Line Symbol ###
-
-* style
-* color
-* width
-
-### Simple Marker Symbol ###
-
-* style
-* size
-* outline - Line Symbol
-    * style
-    * color
-    * width
-* color
-
-### Simple Fill Symbol ###
-
-* style
-* outline - Line symbol
-    * style
-    * color
-    * width
-* color
 
 [Bower]:http://bower.io
 [NPM]:https://www.npmjs.com/

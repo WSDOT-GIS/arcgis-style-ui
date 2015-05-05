@@ -99,7 +99,16 @@ define([], function () {
 		var frag = document.createDocumentFragment();
 
 		var input = document.createElement("input");
-		input.type = type;
+		try {
+			input.type = type;
+		} catch (err) {
+			// Setup fallback for browsers that do not support color input type.
+			if (type === "color") {
+				input.setAttribute("type", "color");
+				input.setAttribute("pattern", /^#[0-9a-f]{6}$/i.source);
+				input.title = "Color in hex. format (E.g. #FFFFFF)";
+			}
+		}
 		input.name = name;
 		input.id = options.id || name + Date.now();
 
@@ -233,16 +242,19 @@ define([], function () {
 				}
 			};
 			var evt = new CustomEvent("style-change", {
-				detail: renderer
+				detail: { renderer: renderer }
 			});
 			form.dispatchEvent(evt);
 			return false;
 		};
 
 		form.onreset = function () {
-			var renderer = JSON.parse(form.dataset.defaultRenderer);
+			var renderer;
+			if (form.dataset.defaultRenderer) {
+				renderer = JSON.parse(form.dataset.defaultRenderer);
+			}
 			var evt = new CustomEvent("style-reset", {
-				detail: renderer
+				detail: { renderer: renderer }
 			});
 			form.dispatchEvent(evt);
 		};
@@ -252,7 +264,7 @@ define([], function () {
 		if (defaultRenderer) {
 			this.form.dataset.defaultRenderer = JSON.stringify(defaultRenderer);
 		}
-	}
+	};
 
 	return RendererForm;
 });

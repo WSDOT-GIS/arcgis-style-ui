@@ -1,0 +1,33 @@
+{
+  "name": "arcgis-style-ui",
+  "main": "custom/arcgis-style-ui/main.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/WSDOT-GIS/arcgis-style-ui",
+  "authors": [
+    "WSDOT"
+  ],
+  "description": "Style UI for ArcGIS feature services",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "ArcGIS",
+    "style",
+    "renderer",
+    "symbol",
+    "UI",
+    "dialog"
+  ],
+  "license": "Public Domain",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "customevent-polyfill": "~1.0.0",
+    "dialog-polyfill": "~0.3.0"
+  }
+}

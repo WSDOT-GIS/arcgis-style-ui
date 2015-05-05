@@ -4,6 +4,9 @@ define(["./main"], function (StyleUI) {
 	function StyleDialog() {
 		var self = this;
 		var dialog = document.createElement("dialog");
+		if (dialogPolyfill) {
+			dialogPolyfill.registerDialog(dialog);
+		}
 		document.body.appendChild(dialog);
 
 		var header = document.createElement("div");
@@ -23,9 +26,22 @@ define(["./main"], function (StyleUI) {
 
 		this.dialog = dialog;
 		var styleUI = new StyleUI();
-		styleUI.form.method = "dialog";
+		try {
+			styleUI.form.method = "dialog";
+		} catch (err) {
+			styleUI.form.setAttribute("method", "dialog");
+		}
 		this.dialog.appendChild(styleUI.form);
 		this.layer = null;
+
+		styleUI.form.addEventListener("style-change", function (evt) {
+			
+
+		});
+
+		styleUI.form.addEventListener("style-reset", function (evt) {
+
+		});
 	}
 
 	StyleDialog.prototype.setLayer = function (layer) {
@@ -33,8 +49,8 @@ define(["./main"], function (StyleUI) {
 	};
 
 	/**
-	 * 
-	 * @param {Layer} [layer]
+	 * Shows the dialog.
+	 * @param {Layer} [layer] - If a layer is specified, the StyleDialog#setLayer function will be called before opening the dialog.
 	 */
 	StyleDialog.prototype.show = function (layer) {
 		if (layer) {
@@ -44,7 +60,7 @@ define(["./main"], function (StyleUI) {
 	};
 
 	StyleDialog.prototype.close = function () {
-
+		this.dialog.close();
 	};
 
 	return StyleDialog;

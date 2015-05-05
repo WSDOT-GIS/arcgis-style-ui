@@ -3,6 +3,8 @@
 
 This project is for designing a UI that will allow the user to change the styling of feature layers in a map.
 
+[Demo](http://wsdot-gis.github.io/arcgis-style-ui/)
+
 ## Setup ##
 
 Setup required modules using [Bower]. This will download files from [NPM].

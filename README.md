@@ -1,15 +1,24 @@
 ﻿Style UI for ArcGIS feature service
 ===================================
 
+This project is for designing a UI that will allow the user to change the styling of feature layers in a map.
+
 ## Setup ##
 
-Setup required modules using [Bower].
+Setup required modules using [Bower]. This will download files from [NPM].
 
     $ bower install
 
-This project is for designing a UI that will allow the user to change the styling of feature layers in a map.
+## Utilized features that may require polyfills ##
 
-## Inputs for feature geometry types ##
+This module uses some browser features that are not supported by all browsers.
+
+* CustomEvent
+* `<dialog>` element
+
+## Inputs for feature geometry types (Simple Marker/Line/Fill Symbols only) ##
+
+<!-- Table is Github-flavored markdown markup -->
 
 |         |Point             |Polyline          |Polygon           |
 |---------|------------------|------------------|------------------|
@@ -19,6 +28,10 @@ This project is for designing a UI that will allow the user to change the stylin
 |style    |:heavy_check_mark:|                  |:heavy_check_mark:|
 |color    |:heavy_check_mark:|                  |:heavy_check_mark:|
 |size     |:heavy_check_mark:|                  |                  |
+
+### Valid `style` values ###
+
+
 
 ## Symbols ##
 
@@ -47,6 +60,5 @@ This project is for designing a UI that will allow the user to change the stylin
     * width
 * color
 
-
-
 [Bower]:http://bower.io
+[NPM]:https://www.npmjs.com/

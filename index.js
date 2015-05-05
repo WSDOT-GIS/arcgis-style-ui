@@ -5,9 +5,9 @@ require([
 	"esri/layers/FeatureLayer",
 	"esri/renderers/SimpleRenderer",
 	"esri/symbols/SimpleLineSymbol",
-	"arcgis-style-ui"
-], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, ArcGisStyleUI) {
-	var map, layer, styleUI;
+	"arcgis-style-ui/style-dialog"
+], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, StyleDialog) {
+	var map;
 
 	map = new Map("map", {
 		basemap: "hybrid",
@@ -16,12 +16,17 @@ require([
 		showAttribution: true
 	});
 
+	function getMapLayer(layerId) {
+		var layer = map.getLayer(layerId);
+		if (!layer) {
+			layer = map.getGraphicsLayer(layerId);
+		}
+		return layer ||  null;
+	}
+
 	var toggleLayer = function () {
 		var id = this.value;
-		var layer = map.getLayer(id);
-		if (!layer) {
-			layer = map.getGraphicsLayer(id);
-		}
+		var layer = getMapLayer(id);
 		if (layer) {
 			if (this.checked) {
 				layer.show();
@@ -31,41 +36,74 @@ require([
 		}
 	};
 
+	function updateStyle(evt) {
+		var layer = evt.detail.layerId;
+		layer = getMapLayer(layer);
+		var renderer = evt.detail.renderer;
+		renderer = rendererJsonUtils.fromJson(renderer);
+		layer.setRenderer(renderer);
+		layer.refresh();
+	}
+
+	/**
+	 * Opens the dialog for changing the associated layer's style.
+	 * @this {HTMLInputElement} - An HTML button
+	 */
+	var openChangeStyleControls = function () {
+		var id = this.value;
+		var layer = getMapLayer(id);
+		var dialog = new StyleDialog(id, layer.geometryType, layer.renderer);
+		dialog.dialog.addEventListener("style-change", updateStyle);
+		dialog.dialog.addEventListener("style-reset", updateStyle);
+		dialog.show();
+	};
+
 	map.on("layer-add", function (evt) {
-		var layer = evt.layer;
-		var layerList = document.getElementById("layerList");
-		var li = document.createElement("li");
-		var checkbox = document.createElement("input");
+		var layer, layerList, li, checkbox, changeStyleButton;
+		layer = evt.layer;
+		layerList = document.getElementById("layerList");
+
+		li = document.createElement("li");
+
+		checkbox = document.createElement("input");
 		checkbox.type = "checkbox";
 		checkbox.value = layer.id;
 		checkbox.checked = layer.visible;
 		checkbox.addEventListener("click", toggleLayer);
+
 		li.appendChild(checkbox);
 		li.appendChild(document.createTextNode(layer.title || layer.id));
 		li.dataset.layerId = layer.id;
+
+		if (layer.setRenderer) {
+
+			changeStyleButton = document.createElement("button");
+			changeStyleButton.classList.add("set-style-button");
+			changeStyleButton.type = "button";
+			changeStyleButton.textContent = "Style…";
+			changeStyleButton.value = layer.id;
+			changeStyleButton.addEventListener("click", openChangeStyleControls);
+			li.appendChild(changeStyleButton);
+		}
+
 		layerList.insertBefore(li, layerList.firstChild);
 	});
 
 	map.on("load", function () {
-		layer = new FeatureLayer("http://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/WSDOT%20-%20Roadway%20Characteristics/FeatureServer/1", {
+		var layer = new FeatureLayer("http://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/WSDOT%20-%20Roadway%20Characteristics/FeatureServer/1", {
 			id: "Speed_Limits"
 		});
 		map.addLayer(layer);
 
-		var setLayerRenderer = function (evt) {
-			var renderer = evt.detail;
-			renderer = rendererJsonUtils.fromJson(renderer);
-			layer.setRenderer(renderer);
-			layer.refresh();
-		};
-
-		layer.on("load", function () {
-			styleUI = new ArcGisStyleUI(JSON.stringify(layer.renderer.toJson()));
-			document.querySelector(".toolbar").appendChild(styleUI.form);
-
-			styleUI.form.addEventListener("style-change", setLayerRenderer);
-
-			styleUI.form.addEventListener("style-reset", setLayerRenderer);
+		layer = new FeatureLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/Airports/MapServer/0", {
+			id: "Airports"
 		});
+		map.addLayer(layer);
+
+		layer = new FeatureLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/CountyBoundaries/MapServer/0", {
+			id: "Counties"
+		});
+
+		map.addLayer(layer);
 	});
 });

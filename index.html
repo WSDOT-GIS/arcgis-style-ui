@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Style UI test app</title>
+    <script src="polyfills.min.js"></script>
+    <link href="bower_components/dialog-polyfill/dialog-polyfill.css" rel="stylesheet" />
     <link href="//js.arcgis.com/3.13compact/esri/css/esri.css" rel="stylesheet" />
     <link href="index.css" rel="stylesheet" />
 </head>
@@ -23,6 +25,10 @@
                     {
                         name: "arcgis-style-ui",
                         location: root + "custom/arcgis-style-ui"
+                    },
+                    {
+                        name: "color-utils",
+                        location: root + "custom/color-utils"
                     }
                 ]
             }

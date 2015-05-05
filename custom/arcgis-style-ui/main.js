@@ -1,5 +1,5 @@
 ﻿/*global define*/
-define([], function () {
+define(["color-utils"], function (colorUtils) {
 
 	/**
 	 * @external Renderer
@@ -22,6 +22,50 @@ define([], function () {
 		];
 		return createSelect(lineStyles, {
 			defaultValue: defaultValue,
+			name: "linestyle"
+		});
+	}
+
+	/**
+	 * Creates a select element for selecting line styles.
+	 * @param {string} [defaultValue] - Determines which option will have the selected attribute set.
+	 * @returns {HTMLSelectElement}
+	 */
+	function createMarkerStyleSelect(defaultValue) {
+		var lineStyles = [
+			"esriSMSCircle",
+			"esriSMSCross",
+			"esriSMSDiamond",
+			"esriSMSSquare",
+			"esriSMSX",
+			"esriSMSTriangle"
+		];
+		return createSelect(lineStyles, {
+			defaultValue: defaultValue,
+			name: "style"
+		});
+	}
+
+	
+
+	/**
+	 * Creates a select element for selecting line styles.
+	 * @param {string} [defaultValue] - Determines which option will have the selected attribute set.
+	 * @returns {HTMLSelectElement}
+	*/
+	function createFillStyleSelect(defaultValue) {
+		var lineStyles = [
+			"esriSFSBackwardDiagonal",
+			"esriSFSCross",
+			"esriSFSDiagonalCross",
+			"esriSFSForwardDiagonal",
+			"esriSFSHorizontal",
+			"esriSFSSolid",
+			"esriSFSVertical",
+			"esriSFSNull"
+		];
+		return createSelect(lineStyles, {
+			defaultValue: defaultValue,
 			name: "style"
 		});
 	}
@@ -34,7 +78,7 @@ define([], function () {
 	 * @returns {HTMLSelectElement}
 	 */
 	function createSelect(values, options) {
-		var prefixRe = /^esriS[LM]S(\w+)/i;
+		var prefixRe = /^esriS[LMF]S(\w+)/i;
 		var capRe = /([a-z])([A-Z])/g;
 
 		var select = document.createElement("select");
@@ -55,23 +99,8 @@ define([], function () {
 		return select;
 	}
 
-
 	/**
-	 * Returns a hex string into an RGB color array.
-	 */
-	function hexToRgbArray(hexString) {
-		var colorRe = /[0-9a-f]{2}/ig;
-		var match = colorRe.exec(hexString);
-		var parts = [], n;
-		while (match) {
-			n = parseInt(match[0], 16);
-			parts.push(n);
-			match = colorRe.exec(hexString);
-		}
-		return parts;
-	}
-
-	/**
+	 * Options for the createInput function.
 	 * @typedef {Object} CreateInputOptions
 	 * @param {string} type
 	 * @param {string} name
@@ -92,7 +121,16 @@ define([], function () {
 		var frag = document.createDocumentFragment();
 
 		var input = document.createElement("input");
-		input.type = type;
+		try {
+			input.type = type;
+		} catch (err) {
+			// Setup fallback for browsers that do not support color input type.
+			if (type === "color") {
+				input.setAttribute("type", "color");
+				input.setAttribute("pattern", /^#[0-9a-f]{6}$/i.source);
+				input.title = "Color in hex. format (E.g. #FFFFFF)";
+			}
+		}
 		input.name = name;
 		input.id = options.id || name + Date.now();
 
@@ -122,35 +160,82 @@ define([], function () {
 	}
 
 	/**
-	 * Creates the line symbol controls.
+	 * Creates color and alpha controls.
+	 * @param {Object} colorOptions
+	 * @param {string} colorOptions.name
+	 * @param {string} colorOptions.value
+	 * @param {Object} alphaOptions
+	 * @param {string} alphaOptions.name
+	 * @param {string} alphaOptions.title
+	 * @param {number} alphaOptions.value
 	 * @returns {HTMLDocumentFragment}
 	 */
-	function createLineSymbolUI() {
+	function createColorControls(colorOptions, alphaOptions) {
 		var output = document.createDocumentFragment();
+
+		// Initialize option variables if missing.
+		if (!colorOptions) {
+			colorOptions = {};
+		}
+
+		if (!alphaOptions) {
+			alphaOptions = {};
+		}
+
+		var frag = createInput({
+			type: "color",
+			name: colorOptions.name || "color",
+			required: "required",
+			value: colorOptions.value || "#000000"
+		});
+		output.appendChild(frag);
+
+
+		frag = createInput({
+			type: "range",
+			name: alphaOptions.name || "alpha",
+			title: alphaOptions.title || "alpha",
+			min: 0,
+			max: 255,
+			step: 1,
+			required: "required",
+			value: alphaOptions.value || alphaOptions.value === 0 ? alphaOptions.value : 255
+		});
+		output.appendChild(frag);
+
+
+		return output;
+	}
+
+	/**
+	 * Creates the line symbol controls.
+	 * @param {Object} options
+	 * @param {string} [options.linecolor='#000000'] - Color in "#xxxxxx" hex format
+	 * @param {number} [options.linealpha=255] - Alpha value for the color. Valid values are from 0 to 255.
+	 * @param {number} [options.width=1] - Line width.
+	 * @returns {HTMLDocumentFragment}
+	 */
+	function createLineSymbolUI(options) {
+		var output = document.createDocumentFragment();
+
+		if (!options) {
+			options = {};
+		}
 
 		var colorFieldSet = document.createElement("fieldset");
 		var legend = document.createElement("legend");
 		legend.textContent = "Color";
 		colorFieldSet.appendChild(legend);
 
-		var frag = createInput({
-			type: "color",
+		var frag = createColorControls({
 			name: "linecolor",
-			required: "required"
+			value: options.linecolor
+		}, {
+			name: "linealpha",
+			title: "linealpha",
+			value: options.linealpha
 		});
-		colorFieldSet.appendChild(frag);
 
-
-		frag = createInput({
-			type: "range",
-			name: "alpha",
-			title: "alpha",
-			min: 0,
-			max: 255,
-			step: 1,
-			required: "required",
-			value: 255
-		});
 		colorFieldSet.appendChild(frag);
 
 		output.appendChild(colorFieldSet);
@@ -168,7 +253,7 @@ define([], function () {
 			placeholder: "width",
 			title: "width",
 			required: "required",
-			value: 1,
+			value: options && options.width ? options.width : 1,
 			min: 0.5,
 			step: 0.5,
 			max: 10
@@ -180,18 +265,101 @@ define([], function () {
 		return output;
 	}
 
+	function createFillSymbolUI(options) {
+		if (!options) {
+			options = {};
+		}
+
+		var output = document.createDocumentFragment();
+
+		// TODO: Options
+
+		var frag = createLineSymbolUI();
+		output.appendChild(frag);
+
+		frag = createFillStyleSelect();
+		output.appendChild(frag);
+
+		frag = createColorControls();
+		output.appendChild(frag);
+
+		return output;
+	}
+
+
+	function createMarkerSymbolUI(options) {
+		if (!options) {
+			options = {};
+		}
+
+		var output = document.createDocumentFragment();
+
+		// TODO: Options
+
+		var frag = createLineSymbolUI();
+		output.appendChild(frag);
+
+		frag = createMarkerStyleSelect();
+		output.appendChild(frag);
+
+		frag = createColorControls();
+		output.appendChild(frag);
+
+		frag = createInput({
+			type: "number",
+			min: 0,
+			name: "size",
+			title: "size",
+			label: "size",
+			value: 1,
+			required: "required"
+		});
+
+		output.appendChild(frag);
+
+		return output;
+	}
+
 	/**
 	 * An UI control object.
+	 * @param {string} layerId
+	 * @param {string} geometryType
 	 * @param {external:Renderer} defaultRenderer
 	 * @member {HTMLFormElement} form
 	 * @class
 	 */
-	function RendererForm(defaultRenderer) {
+	function RendererForm(layerId, geometryType, defaultRenderer) {
+		var self = this;
 		var form = document.createElement("form");
 		this.form = form;
-		form.dataset.defaultRenderer = defaultRenderer;
 
-		var frag = createLineSymbolUI();
+		if (defaultRenderer) {
+			if (typeof defaultRenderer === "string") {
+				form.dataset.defaultRenderer = defaultRenderer;
+			} else if (typeof defaultRenderer.toJson === "function") {
+				form.dataset.defaultRenderer = JSON.stringify(defaultRenderer.toJson());
+			} else {
+				form.dataset.defaultRenderer = JSON.stringify(defaultRenderer);
+			}
+		}
+
+		var smsRE = /((point)|(sms))/gi;
+		var sfsRE = /((polygon)|(sfs))/gi;
+
+		var symbolType;
+
+		var frag;
+		if (smsRE.test(geometryType)) {
+			frag = createMarkerSymbolUI();
+			symbolType = "esriSMS";
+		} else if (sfsRE.test(geometryType)) {
+			frag = createFillSymbolUI();
+			symbolType = "esriSFS";
+		} else {
+			frag = createLineSymbolUI();
+			symbolType = "esriSLS";
+		}
+		
 		form.appendChild(frag);
 
 		var buttonContainer = document.createElement("div");
@@ -208,29 +376,75 @@ define([], function () {
 		resetButton.textContent = "Reset Style";
 		buttonContainer.appendChild(resetButton);
 
-		form.onsubmit = function () {
-			var renderer = {
-				type: "simple",
-				label: "",
-				description: "",
-				symbol: {
+		Object.defineProperty(this, "linesymbol", {
+			get: function () {
+				var symbol = {
 					type: "esriSLS",
-					color: hexToRgbArray(form.linecolor.value).concat(Number(form.alpha.value)), //[56,168,0,255],
+					color: colorUtils.hexToRgbArray(form.linecolor.value).concat(Number(form.linealpha.value)), //[56,168,0,255],
 					width: Number(form.linewidth.value), //1.5,
-					style: form.style.value //"esriSLSSolid"
+					style: form.linestyle.value //"esriSLSSolid"
+				};
+				return symbol;
+			}
+		});
+
+		Object.defineProperty(this, "symbol", {
+			get: function () {
+				var symbol;
+				if (symbolType === "esriSLS") {
+					symbol = self.linesymbol;
+				} else {
+					symbol = {
+						type: symbolType,
+						outline: self.linesymbol,
+						color: colorUtils.hexToRgbArray(form.color.value).concat(Number(form.alpha.value)), //[56,168,0,255],
+						width: Number(form.linewidth.value), //1.5
+						style: form.style.value, //"esriSLSSolid"
+						size: form.size ? Number(form.size.value) : null
+					};
 				}
-			};
+				
+				return symbol;
+			}
+		});
+
+		Object.defineProperty(this, "renderer", {
+			get: function () {
+				var renderer = {
+					type: "simple",
+					label: "",
+					description: "",
+					symbol: self.symbol
+				};
+				return renderer;
+			}
+		});
+
+		form.onsubmit = function () {
 			var evt = new CustomEvent("style-change", {
-				detail: renderer
+				detail: {
+					layerId: layerId,
+					renderer: self.renderer
+				},
+				bubbles: true,
+				cancelable: true
 			});
 			form.dispatchEvent(evt);
 			return false;
 		};
 
 		form.onreset = function () {
-			var renderer = JSON.parse(form.dataset.defaultRenderer);
+			var renderer;
+			if (form.dataset.defaultRenderer) {
+				renderer = JSON.parse(form.dataset.defaultRenderer);
+			}
 			var evt = new CustomEvent("style-reset", {
-				detail: renderer
+				detail: {
+					layerId: layerId,
+					renderer: renderer
+				},
+				bubbles: true,
+				cancelable: true
 			});
 			form.dispatchEvent(evt);
 		};

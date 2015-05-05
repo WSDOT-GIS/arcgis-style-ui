@@ -34,3 +34,15 @@
 .map[data-updating] .map-progress {
     display: block;
 }
+
+/*input[name$='alpha']:before {
+    content: 'transparent';
+}
+
+input[name$='alpha']:after {
+    content: 'opaque';
+}*/
+
+dialog > .header {
+    text-align: end;
+}

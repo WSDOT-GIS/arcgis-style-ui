@@ -140,8 +140,8 @@ define([], function () {
 	/**
 	 * Creates the line symbol controls.
 	 * @param {Object} options
-	 * @param {string} [options.color='#000000'] - Color in "#xxxxxx" hex format
-	 * @param {number} [options.alpha=255] - Alpha value for the color. Valid values are from 0 to 255.
+	 * @param {string} [options.linecolor='#000000'] - Color in "#xxxxxx" hex format
+	 * @param {number} [options.linealpha=255] - Alpha value for the color. Valid values are from 0 to 255.
 	 * @param {number} [options.width=1] - Line width.
 	 * @returns {HTMLDocumentFragment}
 	 */
@@ -157,20 +157,20 @@ define([], function () {
 			type: "color",
 			name: "linecolor",
 			required: "required",
-			value: options && options.color ? options.color : "#000000"
+			value: options && options.linecolor ? options.linecolor : "#000000"
 		});
 		colorFieldSet.appendChild(frag);
 
 
 		frag = createInput({
 			type: "range",
-			name: "alpha",
-			title: "alpha",
+			name: "linealpha",
+			title: "linealpha",
 			min: 0,
 			max: 255,
 			step: 1,
 			required: "required",
-			value: options && (options.alpha || options.alpha === 0)  ? options.alpha : 255
+			value: options && (options.linealpha || options.linealpha === 0)  ? options.linealpha : 255
 		});
 		colorFieldSet.appendChild(frag);
 
@@ -236,7 +236,7 @@ define([], function () {
 				description: "",
 				symbol: {
 					type: "esriSLS",
-					color: hexToRgbArray(form.linecolor.value).concat(Number(form.alpha.value)), //[56,168,0,255],
+					color: hexToRgbArray(form.linecolor.value).concat(Number(form.linealpha.value)), //[56,168,0,255],
 					width: Number(form.linewidth.value), //1.5,
 					style: form.style.value //"esriSLSSolid"
 				}

@@ -33,14 +33,6 @@ define(["./main"], function (StyleUI) {
 		}
 		this.dialog.appendChild(styleUI.form);
 		this.layer = null;
-
-		////styleUI.form.addEventListener("style-change", function (evt) {
-		////	dialog.dispatchEvent(evt);
-		////});
-
-		////styleUI.form.addEventListener("style-reset", function (evt) {
-		////	dialog.dispatchEvent(evt);
-		////});
 	}
 
 	StyleDialog.prototype.setLayer = function (layer) {

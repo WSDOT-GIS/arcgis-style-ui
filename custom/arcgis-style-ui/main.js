@@ -310,8 +310,12 @@ define(["color-utils"], function (colorUtils) {
 			min: 0,
 			name: "size",
 			title: "size",
-			label: "size"
+			label: "size",
+			value: 1,
+			required: "required"
 		});
+
+		output.appendChild(frag);
 
 		return output;
 	}
@@ -319,12 +323,13 @@ define(["color-utils"], function (colorUtils) {
 	/**
 	 * An UI control object.
 	 * @param {string} layerId
-	 * @param {string} symbolType
+	 * @param {string} geometryType
 	 * @param {external:Renderer} defaultRenderer
 	 * @member {HTMLFormElement} form
 	 * @class
 	 */
-	function RendererForm(layerId, symbolType, defaultRenderer) {
+	function RendererForm(layerId, geometryType, defaultRenderer) {
+		var self = this;
 		var form = document.createElement("form");
 		this.form = form;
 
@@ -341,13 +346,18 @@ define(["color-utils"], function (colorUtils) {
 		var smsRE = /((point)|(sms))/gi;
 		var sfsRE = /((polygon)|(sfs))/gi;
 
+		var symbolType;
+
 		var frag;
-		if (smsRE.test(symbolType)) {
+		if (smsRE.test(geometryType)) {
 			frag = createMarkerSymbolUI();
-		} else if (sfsRE.test(symbolType)) {
+			symbolType = "esriSMS";
+		} else if (sfsRE.test(geometryType)) {
 			frag = createFillSymbolUI();
+			symbolType = "esriSFS";
 		} else {
 			frag = createLineSymbolUI();
+			symbolType = "esriSLS";
 		}
 		
 		form.appendChild(frag);
@@ -366,22 +376,55 @@ define(["color-utils"], function (colorUtils) {
 		resetButton.textContent = "Reset Style";
 		buttonContainer.appendChild(resetButton);
 
-		form.onsubmit = function () {
-			var renderer = {
-				type: "simple",
-				label: "",
-				description: "",
-				symbol: {
+		Object.defineProperty(this, "linesymbol", {
+			get: function () {
+				var symbol = {
 					type: "esriSLS",
 					color: colorUtils.hexToRgbArray(form.linecolor.value).concat(Number(form.linealpha.value)), //[56,168,0,255],
 					width: Number(form.linewidth.value), //1.5,
-					style: form.style.value //"esriSLSSolid"
+					style: form.linestyle.value //"esriSLSSolid"
+				};
+				return symbol;
+			}
+		});
+
+		Object.defineProperty(this, "symbol", {
+			get: function () {
+				var symbol;
+				if (symbolType === "esriSLS") {
+					symbol = self.linesymbol;
+				} else {
+					symbol = {
+						type: symbolType,
+						outline: self.linesymbol,
+						color: colorUtils.hexToRgbArray(form.color.value).concat(Number(form.alpha.value)), //[56,168,0,255],
+						width: Number(form.linewidth.value), //1.5
+						style: form.style.value, //"esriSLSSolid"
+						size: form.size ? Number(form.size.value) : null
+					};
 				}
-			};
+				
+				return symbol;
+			}
+		});
+
+		Object.defineProperty(this, "renderer", {
+			get: function () {
+				var renderer = {
+					type: "simple",
+					label: "",
+					description: "",
+					symbol: self.symbol
+				};
+				return renderer;
+			}
+		});
+
+		form.onsubmit = function () {
 			var evt = new CustomEvent("style-change", {
 				detail: {
 					layerId: layerId,
-					renderer: renderer
+					renderer: self.renderer
 				},
 				bubbles: true,
 				cancelable: true

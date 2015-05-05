@@ -7,7 +7,7 @@ require([
 	"esri/symbols/SimpleLineSymbol",
 	"arcgis-style-ui/style-dialog"
 ], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, StyleDialog) {
-	var map, layer;
+	var map;
 
 	map = new Map("map", {
 		basemap: "hybrid",
@@ -90,9 +90,20 @@ require([
 	});
 
 	map.on("load", function () {
-		layer = new FeatureLayer("http://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/WSDOT%20-%20Roadway%20Characteristics/FeatureServer/1", {
+		var layer = new FeatureLayer("http://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/WSDOT%20-%20Roadway%20Characteristics/FeatureServer/1", {
 			id: "Speed_Limits"
 		});
+		map.addLayer(layer);
+
+		layer = new FeatureLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/Airports/MapServer/0", {
+			id: "Airports"
+		});
+		map.addLayer(layer);
+
+		layer = new FeatureLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/CountyBoundaries/MapServer/0", {
+			id: "Counties"
+		});
+
 		map.addLayer(layer);
 	});
 });

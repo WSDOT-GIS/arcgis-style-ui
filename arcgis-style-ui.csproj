@@ -41,33 +41,38 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="arcgis-style-ui\color-utils.js" />
+    <Content Include="arcgis-style-ui\main.js" />
+    <Content Include="arcgis-style-ui\style-dialog.js" />
     <Content Include="bower_components\customevent-polyfill\customevent-polyfill.js" />
     <Content Include="bower_components\customevent-polyfill\customevent-polyfill.min.js" />
+    <Content Include="bower_components\customevent-polyfill\gulpfile.js" />
     <Content Include="bower_components\dialog-polyfill\dialog-polyfill.css" />
     <Content Include="bower_components\dialog-polyfill\dialog-polyfill.js" />
-    <Content Include="custom\arcgis-style-ui\color-utils.js" />
-    <Content Include="custom\arcgis-style-ui\main.js" />
-    <Content Include="custom\arcgis-style-ui\style-dialog.js" />
-    <Content Include="index.css" />
+    <Content Include="demo\index.css" />
+    <Content Include="demo\index.html" />
+    <Content Include="demo\index.js" />
+    <Content Include="demo\polyfills.js" />
+    <Content Include="demo\polyfills.min.js" />
     <Content Include="index.html" />
-    <Content Include="index.js" />
-    <Content Include="polyfills.js">
-      <DependentUpon>polyfills.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="polyfills.min.js">
-      <DependentUpon>polyfills.js</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="polyfills.js.bundle" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="polyfills.min.js.map">
-      <DependentUpon>polyfills.min.js</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="bower.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="demo\polyfills.js.bundle" />
+    <Content Include="demo\polyfills.min.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bower_components\customevent-polyfill\.bower.json" />
+    <Content Include="bower_components\customevent-polyfill\bower.json" />
+    <Content Include="bower_components\customevent-polyfill\LICENSE" />
+    <Content Include="bower_components\customevent-polyfill\package.json" />
+    <Content Include="bower_components\customevent-polyfill\README.md" />
+    <Content Include="bower_components\dialog-polyfill\.bower.json" />
+    <Content Include="bower_components\dialog-polyfill\bower.json" />
+    <Content Include="bower_components\dialog-polyfill\LICENSE" />
+    <Content Include="bower_components\dialog-polyfill\README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

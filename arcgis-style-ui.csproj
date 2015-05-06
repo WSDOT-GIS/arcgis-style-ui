@@ -45,9 +45,9 @@
     <Content Include="bower_components\customevent-polyfill\customevent-polyfill.min.js" />
     <Content Include="bower_components\dialog-polyfill\dialog-polyfill.css" />
     <Content Include="bower_components\dialog-polyfill\dialog-polyfill.js" />
+    <Content Include="custom\arcgis-style-ui\color-utils.js" />
     <Content Include="custom\arcgis-style-ui\main.js" />
     <Content Include="custom\arcgis-style-ui\style-dialog.js" />
-    <Content Include="custom\color-utils\main.js" />
     <Content Include="index.css" />
     <Content Include="index.html" />
     <Content Include="index.js" />

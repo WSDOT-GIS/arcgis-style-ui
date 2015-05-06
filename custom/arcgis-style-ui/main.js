@@ -1,5 +1,5 @@
 ﻿/*global define*/
-define(["color-utils"], function (colorUtils) {
+define(["./color-utils"], function (colorUtils) {
 
 	/**
 	 * @external Renderer

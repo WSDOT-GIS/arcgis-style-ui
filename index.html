@@ -1,41 +1,10 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Style UI test app</title>
-    <script src="polyfills.min.js"></script>
-    <link href="bower_components/dialog-polyfill/dialog-polyfill.css" rel="stylesheet" />
-    <link href="//js.arcgis.com/3.13compact/esri/css/esri.css" rel="stylesheet" />
-    <link href="index.css" rel="stylesheet" />
+    <title>Redirect to demo page</title>
+    <meta http-equiv="REFRESH" content="0; url=demo">
 </head>
 <body>
-    <div id="map">
-        <div class="toolbar">
-            <div id="layerListPane">
-                <ul id="layerList"></ul>
-            </div>
-        </div>
 
-        <progress class="map-progress">Map loading...</progress>
-    </div>
-    <script>
-        (function (root) {
-            var dojoConfig = {
-                async: true,
-                packages: [
-                    {
-                        name: "arcgis-style-ui",
-                        location: root + "custom/arcgis-style-ui"
-                    },
-                    {
-                        name: "color-utils",
-                        location: root + "custom/color-utils"
-                    }
-                ]
-            }
-            window.dojoConfig = dojoConfig;
-        }([location.origin, location.pathname.replace(/[^\/]+$/, "")].join("")));
-    </script>
-    <script src="//js.arcgis.com/3.13compact/init.js"></script>
-    <script src="index.js"></script>
 </body>
 </html>

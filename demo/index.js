@@ -9,6 +9,11 @@ require([
 ], function (Map, rendererJsonUtils, FeatureLayer, SimpleRenderer, SimpleLineSymbol, StyleDialog) {
 	var map;
 
+	// Each layer's dialog will be stored in this object.
+	var dialogs = {
+	};
+
+	// Create the map.
 	map = new Map("map", {
 		basemap: "hybrid",
 		center: [-120.80566406246835, 47.41322033015946],
@@ -16,6 +21,12 @@ require([
 		showAttribution: true
 	});
 
+	/**
+	 * Get's a layer from the map using the layer's ID.
+	 * Both the graphics layers and other layers are searched.
+	 * @param {string} layerId
+	 * @returns {!Layer} Returns a layer if there is a matching layer  in the map, null otherwise.
+	 */
 	function getMapLayer(layerId) {
 		var layer = map.getLayer(layerId);
 		if (!layer) {
@@ -24,6 +35,10 @@ require([
 		return layer ||  null;
 	}
 
+	/**
+	 * Toggles a layer's visibility to match its associated checkbox's checked state.
+	 * @this {HTMLInputElement} A checkbox input element.
+	 */
 	var toggleLayer = function () {
 		var id = this.value;
 		var layer = getMapLayer(id);
@@ -36,6 +51,13 @@ require([
 		}
 	};
 
+	/**
+	 * Updates a layer's style to match what the user has specified in a form.
+	 * @param {CustomEvent} evt
+	 * @param {string} evt.detail.layerId
+	 * @param {Object} evt.detail.renderer
+	 * @this {HTMLFormElement}
+	 */
 	function updateStyle(evt) {
 		var layer = evt.detail.layerId;
 		layer = getMapLayer(layer);
@@ -52,12 +74,23 @@ require([
 	var openChangeStyleControls = function () {
 		var id = this.value;
 		var layer = getMapLayer(id);
-		var dialog = new StyleDialog(id, layer.geometryType, layer.renderer);
-		dialog.dialog.addEventListener("style-change", updateStyle);
-		dialog.dialog.addEventListener("style-reset", updateStyle);
+		// Get the existing dialog.
+		var dialog = dialogs[id];
+		// If no exisiting dialog exists, create a new one.
+		if (!dialog) {
+			dialog = new StyleDialog(id, layer.geometryType, layer.renderer);
+			dialog.dialog.addEventListener("style-change", updateStyle);
+			dialog.dialog.addEventListener("style-reset", updateStyle);
+			dialogs[id] = dialog;
+		}
 		dialog.show();
 	};
 
+	/**
+	 * Creates a layer list.
+	 * @param {Event} evt
+	 * @param {Layer} evt.layer
+	 */
 	map.on("layer-add", function (evt) {
 		var layer, layerList, li, checkbox, changeStyleButton;
 		layer = evt.layer;
@@ -90,6 +123,7 @@ require([
 	});
 
 	map.on("load", function () {
+		// Add layers.
 		var layer = new FeatureLayer("http://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/WSDOT%20-%20Roadway%20Characteristics/FeatureServer/1", {
 			id: "Speed_Limits"
 		});

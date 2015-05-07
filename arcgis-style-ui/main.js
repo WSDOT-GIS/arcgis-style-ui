@@ -12,19 +12,15 @@ define(["./color-utils"], function (colorUtils) {
 	 */
 
 	/**
-	 * @typedef {Object} SimpleSymbolOptions
-	 * @property {string} linecolor - Color in "#xxxxxx" hex format
-	 * @property {number} linealpha - Alpha value for the color. Valid values are from 0 to 255.
-	 * @property {number} linewidth - Line width.
-	 * @property {string} linestyle - Line style
-	 * @property {string} color - Color in "#xxxxxx" hex format
-	 * @property {number} alpha - Alpha value for the color. Valid values are from 0 to 255.
-	 * @property {number} size - Size of a marker symbol
-	 * @property {string} style - Fill style or marker style
-	 */
-
-	/**
-	 * 
+	 * @class
+	 * @member {string} linecolor - Color in "#xxxxxx" hex format
+	 * @member {number} linealpha - Alpha value for the color. Valid values are from 0 to 255.
+	 * @member {number} linewidth - Line width.
+	 * @member {string} linestyle - Line style
+	 * @member {string} color - Color in "#xxxxxx" hex format
+	 * @member {number} alpha - Alpha value for the color. Valid values are from 0 to 255.
+	 * @member {number} size - Size of a marker symbol
+	 * @member {string} style - Fill style or marker style
 	 * @param {(external:Renderer|external:Symbol)} rendererOrSymbol
 	 */
 	function SimpleSymbolOptions(rendererOrSymbol) {
@@ -157,7 +153,8 @@ define(["./color-utils"], function (colorUtils) {
 			var label = name.replace(prefixRe, "$1").replace(capRe, "$1 $2");
 			option.value = name;
 			if (options.defaultValue && name === options.defaultValue) {
-				option.selected = name;
+				//option.selected = name;
+				option.setAttribute("selected", "selected");
 			}
 			option.label = label;
 			option.textContent = label;
@@ -200,13 +197,17 @@ define(["./color-utils"], function (colorUtils) {
 			}
 		}
 		input.name = name;
-		input.id = options.id || name + Date.now();
+		if (options.id) {
+			input.id = options.id;
+		}
 
 		var label;
 		if (options.label) {
 			label = document.createElement("label");
 			label.textContent = options.label;
-			label.for = input.id;
+			if (input.id) {
+				label.for = input.id;
+			}
 		}
 
 

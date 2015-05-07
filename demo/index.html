@@ -1,9 +1,28 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
 <head>
     <title>Style UI test app</title>
-    <script src="polyfills.min.js"></script>
-    <link href="../bower_components/dialog-polyfill/dialog-polyfill.css" rel="stylesheet" />
+    <script>
+        // Test for support of Dialog element.
+        // If not supported, add polyfill script and associated stylesheet.
+        (function () {
+            var dialog = document.createElement("dialog");
+            var elem;
+            if (!dialog.open) {
+                elem = document.createElement("script");
+                elem.src = "../bower_components/dialog-polyfill/dialog-polyfill.js";
+                document.head.appendChild(elem);
+
+                elem = document.createElement("link");
+                elem.href = "../bower_components/dialog-polyfill/dialog-polyfill.css";
+                elem.rel = "stylesheet";
+                document.head.appendChild(elem);
+            }
+
+
+        }());
+    </script>
+    <script src="../bower_components/customevent-polyfill/customevent-polyfill.min.js"></script>
     <link href="//js.arcgis.com/3.13compact/esri/css/esri.css" rel="stylesheet" />
     <link href="index.css" rel="stylesheet" />
     <link rel="shortcut icon" href="http://www.wsdot.wa.gov/favicon.ico" />

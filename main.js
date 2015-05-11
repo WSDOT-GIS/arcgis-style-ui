@@ -1,4 +1,9 @@
 ﻿/*global define*/
+
+/**
+ * Moudle that provides a user interface for styling layers.
+ * @module arcgis-style-ui
+ */
 define(["./color-utils"], function (colorUtils) {
 
 	/**
@@ -420,7 +425,8 @@ define(["./color-utils"], function (colorUtils) {
 	 * @param {string} geometryType
 	 * @param {external:Renderer} defaultRenderer
 	 * @member {HTMLFormElement} form
-	 * @class
+	 * @constructor
+	 * @alias module:arcgis-style-ui
 	 */
 	function RendererForm(layerId, geometryType, defaultRenderer) {
 		var self = this;

@@ -1,4 +1,5 @@
 ﻿/*global define*/
+
 define(function () {
 	/**
 	 * Converts an array of RGB or RGBA values into a hexadecimal string value.
@@ -60,6 +61,10 @@ define(function () {
 		return parts;
 	}
 
+	/**
+	 * Module for converting between color representations.
+	 * @exports color-utils
+	 */
 	return {
 		rgbArrayToHex: rgbArrayToHex,
 		rgbaArrayToHexAndAlpha: rgbaArrayToHexAndAlpha,

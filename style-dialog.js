@@ -1,8 +1,25 @@
 ﻿/*global define */
 
+/**
+ * A module that defines the StyleDialog class.
+ * @module arcgis-style-ui/style-dialog
+ */
 define(["./main"], function (StyleUI) {
+
+
+	/**
+	 * An object that is used to show a dialog element for styling a layer.
+	 * @param {string} layerId
+	 * @param {string} symbolType
+	 * @param {external:Renderer} defaultRenderer
+	 * @member {HTMLDialogElement} dialog - HTML Dialog element.
+	 * @constructor
+	 * @alias module:StyleDialog
+	 */
 	function StyleDialog(layerId, symbolType, defaultRenderer) {
 		var dialog = document.createElement("dialog");
+
+		// If using a dialog polyfill, the dialog needs to be registered.
 		if (!window.HTMLDialogElement && window.dialogPolyfill) {
 			window.dialogPolyfill.registerDialog(dialog);
 		}
@@ -23,13 +40,25 @@ define(["./main"], function (StyleUI) {
 
 		header.appendChild(closeButton);
 
-		this.dialog = dialog;
+		Object.defineProperty(this, "dialog", {
+			get: function () {
+				return dialog;
+			}
+		});
+
 		var styleUI = new StyleUI(layerId, symbolType, defaultRenderer);
 		try {
 			styleUI.form.method = "dialog";
 		} catch (err) {
 			styleUI.form.setAttribute("method", "dialog");
 		}
+
+		Object.defineProperty(this, "styleUI", {
+			get: function () {
+				return styleUI;
+			}
+		});
+
 		this.dialog.appendChild(styleUI.form);
 		this.layer = null;
 	}
@@ -49,6 +78,9 @@ define(["./main"], function (StyleUI) {
 		this.dialog.showModal();
 	};
 
+	/**
+	 * Closes the dialog.
+	 */
 	StyleDialog.prototype.close = function () {
 		this.dialog.close();
 	};

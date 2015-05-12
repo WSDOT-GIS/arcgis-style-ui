@@ -17,6 +17,11 @@ define(["./color-utils"], function (colorUtils) {
 	 */
 
 	/**
+	 * @external Layer
+	 * @see {@link https://developers.arcgis.com/javascript/jsapi/layer-amd.html|Layer}
+	 */
+
+	/**
 	 * @constructor
 	 * @member {string} linecolor - Color in "#xxxxxx" hex format
 	 * @member {number} linealpha - Alpha value for the color. Valid values are from 0 to 255.

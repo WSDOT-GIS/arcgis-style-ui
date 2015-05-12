@@ -66,7 +66,7 @@ define(["./main"], function (StyleUI) {
 
 	/**
 	 * Sets the current layer.
-	 * @param {Layer} layer
+	 * @param {external:Layer} layer
 	 */
 	StyleDialog.prototype.setLayer = function (layer) {
 		this.layer = layer;
@@ -74,7 +74,7 @@ define(["./main"], function (StyleUI) {
 
 	/**
 	 * Shows the dialog.
-	 * @param {Layer} [layer] - If a layer is specified, the {@link module:arcgis-style-ui/style-dialog#setLayer|setLayer} function will be called before opening the dialog.
+	 * @param {external:Layer} [layer] - If a layer is specified, the {@link module:arcgis-style-ui/style-dialog#setLayer|setLayer} function will be called before opening the dialog.
 	 */
 	StyleDialog.prototype.show = function (layer) {
 		if (layer) {

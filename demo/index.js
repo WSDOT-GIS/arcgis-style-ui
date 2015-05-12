@@ -89,7 +89,7 @@ require([
 	/**
 	 * Creates a layer list.
 	 * @param {Event} evt
-	 * @param {Layer} evt.layer
+	 * @param {external:Layer} evt.layer
 	 */
 	map.on("layer-add", function (evt) {
 		var layer, layerList, li, checkbox, changeStyleButton;
